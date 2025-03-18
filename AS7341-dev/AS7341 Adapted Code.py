@@ -53,48 +53,50 @@ SMUX1 = [0x30, 0x01, 0x00, 0x00, 0x00, 0x42, 0x00, 0x00, 0x50, 0x00, 0x00, 0x00,
 
 def setATIME(atime):
     #For peripheral at address given, write to register AS_ATIME the argument atime which is eight bits
-    i2c.writeto_mem(AS7341_ADDR, AS_ATIME, bytearray(atime))
+    i2c.writeto_mem(AS7341_ADDR, AS_ATIME, bytes([atime]))
     
-def setASTEP(astep):
+def setASTEP(astep_l, astep_h):
     #write to two consecutive registers
-    i2c.writeto_mem(AS7341_ADDR, AS_ASTEP_L, astep, 16)
+    i2c.writeto_mem(AS7341_ADDR, AS_ASTEP_L, bytes([astep_l]))
+    i2c.writeto_mem(AS7341_ADDR, AS_ASTEP_H, bytes([astep_h]))
     
-def setGAIN(GAIN):
-    i2c.writeto_mem(AS7341_ADDR, AS_CFG1, atime, 8)
+def setGAIN(gain):
+    i2c.writeto_mem(AS7341_ADDR, AS_CFG1, bytes([gain]))
     
 def SpEn(isenable):
-    temp = i2c.readfrom_mem(AS7341_ADDR, AS_ENABLE, 1)
+    temp = i2c.readfrom_mem(AS7341_ADDR, AS_ENABLE, 1)[0]
     temp = temp & 0xFD
     if isenable:
         temp = temp | 0x02
     else:
         temp = temp & 0xFD
-    i2c.writeto_mem(AS7341_ADDR, AS_ENABLE, temp)
+    i2c.writeto_mem(AS7341_ADDR, AS_ENABLE, bytes([temp]))
     
 def ReadValues(dataset):
+    global SMUX0, SMUX1
     #set PON, read ENABLE then clear bit 0
-    temp = i2c.readfrom_mem(AS7341_ADDR, AS_ENABLE, 1)
-    temp = temp & 0xFE
-    temp = temp | 0x01
-    i2c.writeto_mem(AS7341_ADDR, AS_ENABLE, temp)
+    temp1 = i2c.readfrom_mem(AS7341_ADDR, AS_ENABLE, 1)[0]
+    temp1 = temp1 & 0xFE
+    temp1 = temp1 | 0x01
+    i2c.writeto_mem(AS7341_ADDR, AS_ENABLE, bytes([temp1]))
     
     #disable spectral processing
-    SpEn(false)
+    SpEn(False)
     
     #set SMUX to take config from RAM (CFG6)
-    i2c.writeto_mem(AS7341_ADDR, AS_CFG6, 0x10, 8)
+    i2c.writeto_mem(AS7341_ADDR, AS_CFG6, bytes([0x10]))
     
     #write SMUX config to first 20 registers
     if(dataset == 0):
-        i2c.writeto_mem(AS7341_ADDR, 0x01, SMUX0)
+        i2c.writeto_mem(AS7341_ADDR, 0x01, bytearray(SMUX0))
     else:
-        i2c.writeto_mem(AS7341_ADDR, 0x01, SMUX1)
+        i2c.writeto_mem(AS7341_ADDR, 0x01, bytearray(SMUX1))
         
     #enable SMUXEN bit (ENABLE)
-    temp = i2c.readfrom_mem(AS7341_ADDR, AS_ENABLE, 1)
+    temp = i2c.readfrom_mem(AS7341_ADDR, AS_ENABLE, 1)[0]
     temp = temp & 0xEF
     temp = temp | 0x10
-    i2c.writeto_mem(AS7341_ADDR, AS_ENABLE, temp)
+    i2c.writeto_mem(AS7341_ADDR, AS_ENABLE, bytes([temp]))
         
     #wait until SMUX is enabled (set bit in previous step resets to 0)
     
@@ -117,7 +119,7 @@ def ReadValues(dataset):
         print("channel 6 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH1_DATA_L, 2))
         print("channel 7 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH2_DATA_L, 2))
         print("channel 8 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH3_DATA_L, 2))
-        print("clear - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH4_DATA_L, 2))
+        print("clear - ",(i2c.readfrom_mem(AS7341_ADDR, AS_CH4_DATA_L, 2)))
         print("NIR - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH5_DATA_L, 2))
     
 
@@ -130,7 +132,7 @@ i2c = I2C(0,freq=100000)
 while True:
     setATIME(0x64)
     #need to check if bytes are the correct way around
-    setASTEP(0x03E7)
+    setASTEP(0x03, 0xE7)
     setGAIN(0x09)
-    ReadValues()
+    ReadValues(0)
     time.sleep(50)
