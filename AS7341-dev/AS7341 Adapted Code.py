@@ -1,6 +1,14 @@
+#########################################################################################################################################
+#########################################################################################################################################
+### Library Imports
+
 import machine
 import time
 from machine import I2C, Pin
+
+#########################################################################################################################################
+#########################################################################################################################################
+### AS7341 Library
 
 #AS7341 address
 AS7341_ADDR = const(0x39)
@@ -38,25 +46,18 @@ AS_ASTEP_L = const(0xCA)
 AS_ASTEP_H = const(0xCB)
 
 #SMUX Configurations
-SMUX0, SMUX1 = bytearray(20)
-SMUX0[0:19] = [0x00, 0x00, 0x00, 0x40, 0x02, 0x00, 0x10, 0x03, 0x50, 0x10, 0x03, 0x00, 0x00, 0x00, 0x24, 0x00, 0x00, 0x50, 0x00, 0x06]
-SMUX1[0:19] = [0x30, 0x01, 0x00, 0x00, 0x00, 0x42, 0x00, 0x00, 0x50, 0x00, 0x00, 0x00, 0x20, 0x04, 0x00, 0x30, 0x01, 0x50, 0x00, 0x06]
-
-#Main Loop
-def main():
-    i2c = I2C(freq=100000)
-    while true:
-        setATIME(0x64)
-        setASTEP(0x03E7) #need to check if bytes are the correct way around
-        setGAIN(0x09)
-        ReadValues()
-        time.sleep_ms(50)
+SMUX0 = bytearray(20)
+SMUX1 = bytearray(20)
+SMUX0 = [0x00, 0x00, 0x00, 0x40, 0x02, 0x00, 0x10, 0x03, 0x50, 0x10, 0x03, 0x00, 0x00, 0x00, 0x24, 0x00, 0x00, 0x50, 0x00, 0x06]
+SMUX1 = [0x30, 0x01, 0x00, 0x00, 0x00, 0x42, 0x00, 0x00, 0x50, 0x00, 0x00, 0x00, 0x20, 0x04, 0x00, 0x30, 0x01, 0x50, 0x00, 0x06]
 
 def setATIME(atime):
-    i2c.writeto_mem(AS7341_ADDR, AS_ATIME, atime, 8) #For peripheral at address given, write to register AS_ATIME the argument atime which is eight bits
+    #For peripheral at address given, write to register AS_ATIME the argument atime which is eight bits
+    i2c.writeto_mem(AS7341_ADDR, AS_ATIME, bytearray(atime))
     
 def setASTEP(astep):
-    i2c.writeto_mem(AS7341_ADDR, AS_ASTEP_L, astep, 16) #write to two consecutive registers
+    #write to two consecutive registers
+    i2c.writeto_mem(AS7341_ADDR, AS_ASTEP_L, astep, 16)
     
 def setGAIN(GAIN):
     i2c.writeto_mem(AS7341_ADDR, AS_CFG1, atime, 8)
@@ -64,13 +65,12 @@ def setGAIN(GAIN):
 def SpEn(isenable):
     temp = i2c.readfrom_mem(AS7341_ADDR, AS_ENABLE, 1)
     temp = temp & 0xFD
-    if(isenable = true):
+    if isenable:
         temp = temp | 0x02
     else:
         temp = temp & 0xFD
     i2c.writeto_mem(AS7341_ADDR, AS_ENABLE, temp)
     
-
 def ReadValues(dataset):
     #set PON, read ENABLE then clear bit 0
     temp = i2c.readfrom_mem(AS7341_ADDR, AS_ENABLE, 1)
@@ -98,13 +98,39 @@ def ReadValues(dataset):
         
     #wait until SMUX is enabled (set bit in previous step resets to 0)
     
+    
     #enable spectral processing (SP_EN)
-    SpEn(true)
+    SpEn(True)
     
     #wait for data to be ready
     
     #read dataset
-    if(dataset == 0):
-        
+    if dataset:
+        print("channel 1 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH0_DATA_L, 2))
+        print("channel 2 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH1_DATA_L, 2))
+        print("channel 3 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH2_DATA_L, 2))
+        print("channel 4 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH3_DATA_L, 2))
+        print("clear - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH4_DATA_L, 2))
+        print("NIR - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH5_DATA_L, 2))
     else:
+        print("channel 5 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH0_DATA_L, 2))
+        print("channel 6 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH1_DATA_L, 2))
+        print("channel 7 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH2_DATA_L, 2))
+        print("channel 8 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH3_DATA_L, 2))
+        print("clear - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH4_DATA_L, 2))
+        print("NIR - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH5_DATA_L, 2))
     
+
+#########################################################################################################################################
+#########################################################################################################################################
+### Set-Up and Main Loop
+        
+i2c = I2C(0,freq=100000)
+
+while True:
+    setATIME(0x64)
+    #need to check if bytes are the correct way around
+    setASTEP(0x03E7)
+    setGAIN(0x09)
+    ReadValues()
+    time.sleep(50)
