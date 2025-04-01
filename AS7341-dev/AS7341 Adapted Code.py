@@ -87,10 +87,12 @@ def ReadValues(dataset):
     i2c.writeto_mem(AS7341_ADDR, AS_CFG6, bytes([0x10]))
     
     #write SMUX config to first 20 registers
-    if(dataset == 0):
-        i2c.writeto_mem(AS7341_ADDR, 0x01, bytearray(SMUX0))
+    if dataset:
+        for i in range(20):
+            i2c.writeto_mem(AS7341_ADDR, i, bytes([SMUX1[i]]))
     else:
-        i2c.writeto_mem(AS7341_ADDR, 0x01, bytearray(SMUX1))
+        for i in range(20):
+            i2c.writeto_mem(AS7341_ADDR, i, bytes([SMUX0[i]]))
         
     #enable SMUXEN bit (ENABLE)
     temp = i2c.readfrom_mem(AS7341_ADDR, AS_ENABLE, 1)[0]
@@ -99,40 +101,39 @@ def ReadValues(dataset):
     i2c.writeto_mem(AS7341_ADDR, AS_ENABLE, bytes([temp]))
         
     #wait until SMUX is enabled (set bit in previous step resets to 0)
-    
-    
+    time.sleep_ms(50)
+        
     #enable spectral processing (SP_EN)
     SpEn(True)
     
     #wait for data to be ready
+    time.sleep_ms(50)
     
     #read dataset
     if dataset:
-        print("channel 1 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH0_DATA_L, 2))
-        print("channel 2 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH1_DATA_L, 2))
-        print("channel 3 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH2_DATA_L, 2))
-        print("channel 4 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH3_DATA_L, 2))
-        print("clear - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH4_DATA_L, 2))
-        print("NIR - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH5_DATA_L, 2))
+        print("channel 1 - ",int.from_bytes(i2c.readfrom_mem(AS7341_ADDR, AS_CH0_DATA_L, 2),"big"))
+        print("channel 2 - ",int.from_bytes(i2c.readfrom_mem(AS7341_ADDR, AS_CH1_DATA_L, 2),"big"))
+        print("channel 3 - ",int.from_bytes(i2c.readfrom_mem(AS7341_ADDR, AS_CH2_DATA_L, 2),"big"))
+        print("channel 4 - ",int.from_bytes(i2c.readfrom_mem(AS7341_ADDR, AS_CH3_DATA_L, 2),"big"))
+        print("clear -     ",int.from_bytes(i2c.readfrom_mem(AS7341_ADDR, AS_CH4_DATA_L, 2),"big"))
+        print("NIR -       ",int.from_bytes(i2c.readfrom_mem(AS7341_ADDR, AS_CH5_DATA_L, 2),"big"))
     else:
-        print("channel 5 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH0_DATA_L, 2))
-        print("channel 6 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH1_DATA_L, 2))
-        print("channel 7 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH2_DATA_L, 2))
-        print("channel 8 - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH3_DATA_L, 2))
-        print("clear - ",(i2c.readfrom_mem(AS7341_ADDR, AS_CH4_DATA_L, 2)))
-        print("NIR - ",i2c.readfrom_mem(AS7341_ADDR, AS_CH5_DATA_L, 2))
+        print("channel 5 - ",int.from_bytes(i2c.readfrom_mem(AS7341_ADDR, AS_CH0_DATA_L, 2),"big"))
+        print("channel 6 - ",int.from_bytes(i2c.readfrom_mem(AS7341_ADDR, AS_CH1_DATA_L, 2),"big"))
+        print("channel 7 - ",int.from_bytes(i2c.readfrom_mem(AS7341_ADDR, AS_CH2_DATA_L, 2),"big"))
+        print("channel 8 - ",int.from_bytes(i2c.readfrom_mem(AS7341_ADDR, AS_CH3_DATA_L, 2),"big"))
+        print("clear -     ",int.from_bytes(i2c.readfrom_mem(AS7341_ADDR, AS_CH4_DATA_L, 2),"big"))
+        print("NIR -       ",int.from_bytes(i2c.readfrom_mem(AS7341_ADDR, AS_CH5_DATA_L, 2),"big"))
+    print("\n\n")
     
 
 #########################################################################################################################################
 #########################################################################################################################################
 ### Set-Up and Main Loop
     
-##SDA = Pin(0, Pin.OUT)
-##SCL = Pin(1, Pin.OUT)
-i2c = I2C(0,100000)
-##Center = Pin(0, Pin.OUT)
-##Center.value(0)
-print(i2c.scan())
+SDA = Pin(0, Pin.OUT)
+SCL = Pin(1, Pin.OUT)
+i2c = I2C(id=0,scl=1,sda=0,freq=400000) 
 
 
 while True:
@@ -140,5 +141,6 @@ while True:
     #need to check if bytes are the correct way around
     setASTEP(0x03, 0xE7)
     setGAIN(0x09)
-    ReadValues(0)
-    time.sleep(50)
+    ReadValues(True)
+    ReadValues(False)
+    time.sleep(1)
