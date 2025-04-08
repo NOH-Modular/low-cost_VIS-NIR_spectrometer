@@ -2,8 +2,14 @@
 	(version 20250114)
 	(generator "eeschema")
 	(generator_version "9.0")
-	(uuid "ea95db2e-a7c5-47ca-a345-27abc080ea47")
+	(uuid "6f0d8a16-4826-4865-872c-2373181308dc")
 	(paper "A4")
+	(title_block
+		(title "Low Cost VIS/NIF Spectrometer")
+		(date "2025-04-08")
+		(rev "v1")
+		(company "Drawn by Nicolas Viale")
+	)
 	(lib_symbols
 		(symbol "Battery_Management:MCP73831-2-OT"
 			(exclude_from_sim no)

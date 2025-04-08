@@ -5,7 +5,10 @@
 	(uuid "e60f1c3f-7673-4156-99f7-6450fd638f6b")
 	(paper "A4")
 	(title_block
+		(title "Low Cost VIS/NIF Spectrometer")
 		(date "2025-04-08")
+		(rev "v1")
+		(company "Drawn by Nicolas Viale")
 	)
 	(lib_symbols
 		(symbol "Connector:Conn_01x05_Pin"

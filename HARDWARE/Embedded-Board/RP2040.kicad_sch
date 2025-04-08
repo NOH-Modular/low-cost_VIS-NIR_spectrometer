@@ -2,8 +2,14 @@
 	(version 20250114)
 	(generator "eeschema")
 	(generator_version "9.0")
-	(uuid "7d110e55-3426-46f9-9fce-8ecb7954c194")
+	(uuid "6fcd68cf-2a2b-499a-8eef-407a22c0e090")
 	(paper "A4")
+	(title_block
+		(title "Low Cost VIS/NIF Spectrometer")
+		(date "2025-04-08")
+		(rev "v1")
+		(company "Drawn by Nicoals Viale")
+	)
 	(lib_symbols
 		(symbol "Connector:Conn_01x02_Socket"
 			(pin_names
@@ -2795,6 +2801,78 @@
 		(color 0 0 0 0)
 		(uuid "f9ed61b0-356f-4444-867a-3389ecab292b")
 	)
+	(no_connect
+		(at 187.96 130.81)
+		(uuid "05dc2e33-0831-4c98-9db6-472270b1c43e")
+	)
+	(no_connect
+		(at 187.96 113.03)
+		(uuid "1f11a705-6f13-4718-a901-19e009f5b3c7")
+	)
+	(no_connect
+		(at 187.96 110.49)
+		(uuid "27076a6d-9859-4fc3-93cc-3de8983b277b")
+	)
+	(no_connect
+		(at 187.96 90.17)
+		(uuid "36233a9c-52e9-4c2a-9e01-be2f2acfcd8c")
+	)
+	(no_connect
+		(at 187.96 125.73)
+		(uuid "3883dbcd-12ca-497b-9ebb-e63eaffe0b0f")
+	)
+	(no_connect
+		(at 187.96 69.85)
+		(uuid "3b09060b-77cf-4fe7-afad-7b41a57cf583")
+	)
+	(no_connect
+		(at 187.96 105.41)
+		(uuid "4a9af0c1-5137-479e-b9c0-34eec22c2cb8")
+	)
+	(no_connect
+		(at 187.96 100.33)
+		(uuid "54e38130-376a-446a-8d50-a8cee0158008")
+	)
+	(no_connect
+		(at 187.96 95.25)
+		(uuid "78ba833a-8e08-4f04-bb08-1940ce25f39e")
+	)
+	(no_connect
+		(at 187.96 115.57)
+		(uuid "8f35ea67-33fe-4868-ac92-e994024b920d")
+	)
+	(no_connect
+		(at 187.96 128.27)
+		(uuid "9318c5d7-4ed9-43a5-9bf0-456b3528ac2d")
+	)
+	(no_connect
+		(at 187.96 107.95)
+		(uuid "b2845abf-c712-441b-ab10-c356ae74cba2")
+	)
+	(no_connect
+		(at 187.96 97.79)
+		(uuid "b4389c93-b2a0-4e3f-bf41-74d8c0e93528")
+	)
+	(no_connect
+		(at 187.96 59.69)
+		(uuid "c7f12ed0-16a8-4a1e-8294-7ab35d97e5b4")
+	)
+	(no_connect
+		(at 187.96 72.39)
+		(uuid "cb911686-e484-4595-ac80-6198ae012c12")
+	)
+	(no_connect
+		(at 187.96 102.87)
+		(uuid "d0708d21-b365-4453-9d43-25a38c09da25")
+	)
+	(no_connect
+		(at 187.96 118.11)
+		(uuid "d6258326-0d0d-4941-ad7a-635fcd4cb35e")
+	)
+	(no_connect
+		(at 187.96 123.19)
+		(uuid "de27cf42-4479-4f50-8034-9b82e7d25ab2")
+	)
 	(wire
 		(pts
 			(xy 116.84 101.6) (xy 116.84 100.33)
@@ -5531,6 +5609,72 @@
 			)
 		)
 	)
+	(global_label "SENSOR-SDA"
+		(shape input)
+		(at 187.96 54.61 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "27320dcd-b505-4485-ae13-72be222a8fd0")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 203.5847 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "E-PAPER-RST"
+		(shape output)
+		(at 187.96 85.09 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "2bef717d-9834-46af-b748-1cbd9c949777")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 204.7337 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "E-PAPER-MOSI"
+		(shape output)
+		(at 187.96 82.55 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "2e1e77ef-01e7-413d-99c7-a98f5fe729ba")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 205.8828 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "RUN"
 		(shape input)
 		(at 134.62 54.61 180)
@@ -5553,6 +5697,94 @@
 			)
 		)
 	)
+	(global_label "E-PAPER-SCK"
+		(shape output)
+		(at 187.96 80.01 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "5e7191a7-d9b3-4e7d-a2a3-895b3eb72a3f")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 205.0361 80.01 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "E-PAPER-BUSY"
+		(shape output)
+		(at 187.96 87.63 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "604ed773-efea-47a4-89a1-5075fe45f3ca")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 206.1852 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "ENC-B"
+		(shape input)
+		(at 187.96 67.31 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "7510380b-b2bd-48f7-92b7-8e963edce23b")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 197.5371 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "SENSOR-SCL"
+		(shape input)
+		(at 187.96 57.15 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "7570a686-12db-4f3e-8789-b501e7eae350")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 203.5242 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "USB_D+"
 		(shape input)
 		(at 137.16 62.23 180)
@@ -5571,6 +5803,116 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "E-PAPER-DC"
+		(shape output)
+		(at 187.96 74.93 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "8cfec9a4-de1d-4884-8670-d9c8f4fa4d78")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 203.8266 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "ENC-A"
+		(shape input)
+		(at 187.96 62.23 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "90e24800-49a5-412c-8ce0-4d75f2948e58")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 197.3557 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "PUSH-SWITCH"
+		(shape input)
+		(at 187.96 92.71 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "b51c4879-d8b4-4d1e-ae9b-0f4ff80ee26d")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 204.4919 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "ENC-PSH"
+		(shape input)
+		(at 187.96 64.77 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "ce560ac1-50f5-4f2d-a511-df938782b8af")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 200.0771 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "E-PAPER-CS"
+		(shape output)
+		(at 187.96 77.47 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "e7f2e1ce-0a2e-43c3-a00e-7c4b09593df8")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 203.7661 77.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 				(hide yes)
 			)
 		)
