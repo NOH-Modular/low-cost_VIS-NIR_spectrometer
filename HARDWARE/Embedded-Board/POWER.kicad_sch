@@ -5,7 +5,7 @@
 	(uuid "6f0d8a16-4826-4865-872c-2373181308dc")
 	(paper "A4")
 	(title_block
-		(title "Low Cost VIS/NIF Spectrometer")
+		(title "Low Cost VIS/NIR Spectrometer")
 		(date "2025-04-08")
 		(rev "v1")
 		(company "Drawn by Nicolas Viale")
@@ -8993,7 +8993,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:CP_Elec_6.3x7.7"
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
 			(at 266.3952 38.1 0)
 			(effects
 				(font
