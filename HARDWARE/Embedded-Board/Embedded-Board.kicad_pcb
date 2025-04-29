@@ -3379,7 +3379,7 @@
 			(uuid "f5bf3ea4-2687-42c5-aa94-d45073259d29")
 		)
 		(embedded_fonts no)
-		(model "C:/Users/nicol/Dropbox/My Mac (Nicolass-MacBook-Pro.local)/Documents/KiCAD/Libraries/User-main/3D_Models/switch/TactileButton(5mm)_SMD.stp"
+		(model "${KICAD_USER_DIR}/3D_Models/switch/TactileButton(5mm)_SMD.stp"
 			(offset
 				(xyz -2.5 0.3 0)
 			)
@@ -14117,7 +14117,7 @@
 			(uuid "5efcd745-4262-48b3-a079-6117ddde53b1")
 		)
 		(embedded_fonts no)
-		(model "C:/Users/nicol/Dropbox/My Mac (Nicolass-MacBook-Pro.local)/Documents/KiCAD/Libraries/User-main/3D_Models/pot-encoder/EC11-THT-20F-green.step"
+		(model "${KICAD_USER_DIR}/3D_Models/pot-encoder/EC11-THT-20F-green.step"
 			(offset
 				(xyz 7.5 -2.5 0.5)
 			)
@@ -18380,7 +18380,7 @@
 			(uuid "88ccaf6f-5c9e-4b01-a4f8-0052d67d44ef")
 		)
 		(embedded_fonts no)
-		(model "C:/Users/nicol/Dropbox/My Mac (Nicolass-MacBook-Pro.local)/Documents/KiCAD/Libraries/User-main/3D_Models/USB-ports/HRO_TYPE-C-31-M-12.step"
+		(model "${KICAD_USER_DIR}/3D_Models/USB-ports/HRO_TYPE-C-31-M-12.step"
 			(offset
 				(xyz -4.47 -7.35 0)
 			)
@@ -19282,7 +19282,7 @@
 		(descr "Through hole straight socket strip, 1x06, 2.54mm pitch, single row (from Kicad 4.0.7), script generated")
 		(tags "Through hole socket strip THT 1x06 2.54mm single row")
 		(property "Reference" "J4"
-			(at -9.12 0 180)
+			(at -9.12 0 0)
 			(layer "B.SilkS")
 			(uuid "51442bc1-4e13-4c05-89b5-1a6f95a05952")
 			(effects
@@ -19600,6 +19600,7 @@
 		)
 		(embedded_fonts no)
 		(model "${KICAD9_3DMODEL_DIR}/Connector_PinSocket_2.54mm.3dshapes/PinSocket_1x06_P2.54mm_Vertical.wrl"
+			(hide yes)
 			(offset
 				(xyz -6.35 0 0)
 			)
@@ -19611,6 +19612,7 @@
 			)
 		)
 		(model "${KIPRJMOD}/3D-files/AS7341.step"
+			(hide yes)
 			(offset
 				(xyz -100.8 76.4 11.5)
 			)
@@ -19622,6 +19624,7 @@
 			)
 		)
 		(model "${KICAD9_3DMODEL_DIR}/Connector_PinHeader_2.54mm.3dshapes/PinHeader_1x06_P2.54mm_Vertical.step"
+			(hide yes)
 			(offset
 				(xyz -6.35 0 11.5)
 			)
