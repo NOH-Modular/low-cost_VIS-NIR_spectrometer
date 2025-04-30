@@ -32,17 +32,21 @@ void setup() {
 }
 
 void loop() {
-  Serial.println("start loop");
-  drawSpectratest();
+  drawBase();
   delay(3000);
+  drawBars();
+  drawBars();
+  delay(3000);
+  display.refresh(false);
+  delay(5000);
 }
 
-void drawSpectratest()
+void drawBase()
 {
-  Serial.println("draw spectra - Following Example Structure");
-  display.setRotation(1); // sets landscape rotation
-  display.setFullWindow(); // Good practice, ensures loop covers the screen
-  display.firstPage();     // Start paged drawing
+  Serial.println("draw base");
+  display.setRotation(1); //sets landscape rotation
+  display.setFullWindow(); //sets full refresh mode
+  display.firstPage();     //start paged drawing
 
   do {
     //ALL DRAWING COMMANDS GO INSIDE THE LOOP
@@ -55,7 +59,32 @@ void drawSpectratest()
     
     //Draw border to check boundaries
     display.drawRect(0, 6, 250, 122, GxEPD_BLACK);
-    
+
+    //Draw Title text (Set font, color, cursor, print)
+    display.setFont(&FreeMonoBold18pt7b);
+    display.setTextColor(GxEPD_BLACK);
+    display.setCursor(0, 27);
+    display.print("Ripe");
+
+  } while (display.nextPage()); // Send page buffer & check if more pages
+
+  Serial.println("base done");
+}
+
+void drawBars()
+{
+  Serial.println("draw bars");
+  display.setRotation(1); //sets landscape rotation
+  display.setPartialWindow(0, 0, display.width(), display.height()); //sets partial refresh window over whole display
+  display.firstPage();     //start paged drawing
+
+  do {
+    //ALL DRAWING COMMANDS GO INSIDE THE LOOP
+
+    //Set background for the current page
+    display.fillScreen(GxEPD_WHITE);
+
+    display.drawBitmap(2, 39, bars, 245, 89, GxEPD_BLACK);
     //Draw Filled bars (Rectangles)
     display.fillRect(3, 85, 9, 16, GxEPD_BLACK);
     display.fillRect(30, 72, 9, 29, GxEPD_BLACK);
@@ -77,10 +106,10 @@ void drawSpectratest()
     //Draw Title text (Set font, color, cursor, print)
     display.setFont(&FreeMonoBold18pt7b);
     display.setTextColor(GxEPD_BLACK);
-    display.setCursor(0, 21);
-    display.print("Ripe");
+    display.setCursor(0, 27);
+    display.print("Unripe");
 
   } while (display.nextPage()); // Send page buffer & check if more pages
 
-  Serial.println("spectra done");
+  Serial.println("base done");
 }
