@@ -33,6 +33,9 @@
 
 #include "../Config/Debug.h"
 #include "../Config/DEV_Config.h"
+#include "../Fonts/fonts.h"
+#include "../GUI/GUI_paint.h"
+#include "../Examples/ImageData.h"
 
 
 // Display resolution

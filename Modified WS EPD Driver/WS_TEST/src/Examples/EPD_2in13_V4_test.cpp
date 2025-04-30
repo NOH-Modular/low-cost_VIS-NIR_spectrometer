@@ -49,21 +49,21 @@ int EPD_2in13_V4_test(void)
         Debug("Failed to apply for black memory...\r\n");
         return -1;
     }
-    Debug("Paint_NewImage\r\n");
-    Paint_NewImage(BlackImage, EPD_2in13_V4_WIDTH, EPD_2in13_V4_HEIGHT, 90, WHITE);
-	Paint_Clear(WHITE);
-
-
-#if 1   //show image for array    
-    Debug("The e-paper quickly refreshes the display image\r\n");
-    EPD_2in13_V4_Init_Fast();
-    Paint_SelectImage(BlackImage);
-    Paint_Clear(WHITE);
-    Paint_DrawBitMap(gImage_2in13);
-
-    EPD_2in13_V4_Display_Fast(BlackImage);
-    DEV_Delay_ms(2000);
-#endif
+//     Debug("Paint_NewImage\r\n");
+//     Paint_NewImage(BlackImage, EPD_2in13_V4_WIDTH, EPD_2in13_V4_HEIGHT, 90, WHITE);
+// 	Paint_Clear(WHITE);
+//
+//
+// #if 1   //show image for array
+//     Debug("The e-paper quickly refreshes the display image\r\n");
+//     EPD_2in13_V4_Init_Fast();
+//     Paint_SelectImage(BlackImage);
+//     Paint_Clear(WHITE);
+//     Paint_DrawBitMap(gImage_2in13);
+//
+//     EPD_2in13_V4_Display_Fast(BlackImage);
+//     DEV_Delay_ms(2000);
+// #endif
 
 #if 1  // Drawing on the image
 	Paint_NewImage(BlackImage, EPD_2in13_V4_WIDTH, EPD_2in13_V4_HEIGHT, 90, WHITE);  	
