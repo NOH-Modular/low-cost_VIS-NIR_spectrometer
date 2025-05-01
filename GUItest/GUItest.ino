@@ -71,6 +71,7 @@ void setup() {
   Serial.println("full refresh");
   display.clearScreen();
 
+  sensor.begin();
   sensor.disableIndicator(); 
   Serial.println("setup end");
 }
