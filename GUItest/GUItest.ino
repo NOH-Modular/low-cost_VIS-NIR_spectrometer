@@ -97,7 +97,15 @@ void handleBTNINT(){
 }
 
 void setup() {
+  //for RNG, disable if not required
+  randomSeed(analogRead(A0));
+
+  //button interrupt
+  pinMode(15, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(15), handleBTNINT, FALLING);
+
   //display initialisation
+  // pinMode(13, INPUT_PULLDOWN); //pull down busy pin
   display.epd2.selectSPI(SPIn, SPISettings(4000000, MSBFIRST, SPI_MODE0));
   display.init(115200, true, 10, false, SPIn, SPISettings(4000000, MSBFIRST, SPI_MODE0));
   //full refresh to begin
@@ -118,19 +126,23 @@ void setup() {
     sensor.disableIndicator();
   }
   delay(1000);
-  drawBase();
+  timetoupdate == true;
 }
 
 void loop() {
-  if (versatile_encoder->ReadEncoder()) {
+  // if (timetoupdate == true) {
     if(sensor.isConnected() == true){
       drawBars(intreadings);
     }
     else{
-      drawBase();
+      for(uint8_t i = 0; i < 18; i++){ //randomly generates bogus data
+        intreadings[i] = random(68);
+        readings[i] = intreadings[i];
+      }
+      drawBars(intreadings);
     }
-    // display.refresh(); //only required for partial updates to freshen up screen
-  }
+    delay(1000);
+  // }
 }
 
 //spectral reading, 0 for no LEDs, 1 for inbuilt LEDs, (2 for external LEDs, 4 for all LEDs)
@@ -235,6 +247,7 @@ void drawBase() {
       display.print(sensemode);
     }
     
+    //draw led mode
     if(ledmode == 0){
       display.setCursor(205, 23);
       display.print("No LEDs");
@@ -294,6 +307,45 @@ void drawBars(uint8_t *readings) {
     display.fillRect(209, 107, 9, -readings[15], GxEPD_BLACK);
     display.fillRect(223, 107, 9, -readings[16], GxEPD_BLACK);
     display.fillRect(237, 107, 9, -readings[17], GxEPD_BLACK);
+
+    //Draw measurement mode
+    display.setFont(); //default 5x7 font
+    display.setTextColor(GxEPD_BLACK);
+    if(sensemode == 0){
+      display.setCursor(181, 10);
+      display.print("Single Fire");
+    }
+    else if(sensemode == 1){
+      display.setCursor(187, 10);
+      display.print("Continuous");
+    }
+    else{
+      display.setCursor(205, 10);
+      display.print("Burst ");
+      display.print(sensemode);
+    }
+    
+    //draw led mode
+    if(ledmode == 0){
+      display.setCursor(205, 23);
+      display.print("No LEDs");
+    }
+    else if(ledmode == 1){
+      display.setCursor(169, 23);
+      display.print("Internal LEDs");
+    }
+    else if(ledmode == 2){
+      display.setCursor(169, 23);
+      display.print("External LEDs");
+    }
+    else if(ledmode == 3){
+      display.setCursor(199, 23);
+      display.print("All LEDs");
+    }
+    else{
+      display.setCursor(175, 23);
+      display.print("Invalid Mode");
+    }
 
     //Draw Title text (Set font, color, cursor, print)
     display.setFont(&FreeMonoBold18pt7b);
