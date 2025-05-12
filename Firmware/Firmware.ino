@@ -21,13 +21,27 @@ uint8_t ledmode = 1; //default is builtin LED mode, 0 is no LEDs, 1 is internal 
 uint8_t sensemode = 0; //default is single fire mode, 1 is continuous, 2,3,4, etc takes that many readings in a burst and averages
 
 //Rotary Encoder Library
-#include "Versatile_RotaryEncoder.h"
-#define clk 5
-#define dt 3
-#define sw 4
-void handleRotate(int8_t rotation);
-void handlePressRotate(int8_t rotation);
-Versatile_RotaryEncoder *versatile_encoder;
+#include <RotaryEncoder.h>
+#define PIN_IN1 5
+#define PIN_IN2 3
+RotaryEncoder *encoder = nullptr;
+int8_t pos = 0;
+int8_t newpos = 0;
+
+void checkPosition() //called upon whenever pin changes on encoder
+{
+  encoder->tick(); //call tick() to check the state.
+  newpos = encoder->getPosition();
+  if (pos != newpos) {
+    //bigText("ROTATE");
+      if ((int)(encoder->getDirection()) > 0 && sensemode < 10){
+        sensemode++;
+      }
+      else if((int)(encoder->getDirection()) < 0 && sensemode > 0){
+        sensemode--;
+      }
+  }
+}
 
 //Spectrometer Module Library
 #include "SparkFun_AS7265X.h" 
@@ -117,9 +131,9 @@ void setup() {
   display.clearScreen();
 
   //encoder initialisation
-  versatile_encoder = new Versatile_RotaryEncoder(clk, dt, sw);
-  versatile_encoder->setHandleRotate(handleRotate); //load rotate handle function
-  versatile_encoder->setHandlePressRotate(handlePressRotate); //load press and rotate handle function
+  encoder = new RotaryEncoder(PIN_IN1, PIN_IN2, RotaryEncoder::LatchMode::FOUR3);
+  attachInterrupt(digitalPinToInterrupt(PIN_IN1), checkPosition, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(PIN_IN2), checkPosition, CHANGE);
   
   //spectrometer initialisation
   delay(750); //750ms gives E-Paper enough time to initialise
@@ -204,13 +218,14 @@ void multimeasure(){
     measuring = false;
     drawMain(detectColour(), intreadings);
   }
-  if(sensemode == 1){ //continuous fire
+  else if(sensemode == 1){ //continuous fire
     while(measuring){ //continues until button pressed again
       measure();
       drawMain(detectColour(), intreadings);
+      delay(500);
     }
   }
-  else{ //burst fire
+  else if(sensemode > 1){ //burst fire
     for(uint8_t i = 0; i < sensemode; i++){ //take number of measurements equal to sensemode from 2-9
       measure();
       //record in mem
@@ -384,24 +399,4 @@ void drawMain(String toptext, uint8_t *finalreadings) {
     display.print(toptext);
 
   } while (display.nextPage()); // Send page buffer & check if more pages
-}
-
-//Encoder Handle Functions
-void handleRotate(int8_t rotation) {
-  bigText("ROTATE");
-  if (rotation > 0 && sensemode < 10){
-    sensemode++;
-  }
-  else if(rotation < 0 && sensemode > 0){
-    sensemode--;
-  }
-}
-void handlePressRotate(int8_t rotation) {
-  bigText("SPEEN");
-  if (rotation > 0 && ledmode < 5){
-    ledmode++;
-  }
-  else if(rotation < 0 && sensemode > 0){
-    ledmode--;
-  }
 }
