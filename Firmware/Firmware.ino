@@ -136,6 +136,10 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(PIN_IN2), checkPosition, CHANGE);
   
   //spectrometer initialisation
+  pinMode(0, OUTPUT);
+  pinMode(1, OUTPUT);
+  Wire.setSCL(1);
+  Wire.setSDA(0);
   delay(750); //750ms gives E-Paper enough time to initialise
   if (sensor.begin() == false){ //no sensor detected
     bigText("No Sensor Connected");
