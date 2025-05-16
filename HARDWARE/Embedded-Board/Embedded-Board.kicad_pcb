@@ -3379,7 +3379,7 @@
 			(uuid "f5bf3ea4-2687-42c5-aa94-d45073259d29")
 		)
 		(embedded_fonts no)
-		(model "${KICAD_USER_DIR}/3D_Models/switch/TactileButton(5mm)_SMD.stp"
+		(model "C:/Users/nicol/Dropbox/My Mac (Nicolass-MacBook-Pro.local)/Documents/KiCAD/Libraries/User-main/3D_Models/switch/TactileButton(5mm)_SMD.stp"
 			(offset
 				(xyz -2.5 0.3 0)
 			)
@@ -14117,7 +14117,7 @@
 			(uuid "5efcd745-4262-48b3-a079-6117ddde53b1")
 		)
 		(embedded_fonts no)
-		(model "${KICAD_USER_DIR}/3D_Models/pot-encoder/EC11-THT-20F-green.step"
+		(model "C:/Users/nicol/Dropbox/My Mac (Nicolass-MacBook-Pro.local)/Documents/KiCAD/Libraries/User-main/3D_Models/pot-encoder/EC11-THT-20F-green.step"
 			(offset
 				(xyz 7.5 -2.5 0.5)
 			)
@@ -15316,9 +15316,8 @@
 			)
 		)
 		(model "C:/Users/nicol/Dropbox/My Mac (Nicolass-MacBook-Pro.local)/Documents/KiCAD/Libraries/User-main/3D_Models/screen/2.13inch e-Paper HAT bwr v3.STEP"
-			(hide yes)
 			(offset
-				(xyz -12 -24 11.5)
+				(xyz -12 -24 9)
 			)
 			(scale
 				(xyz 1 1 1)
@@ -18380,7 +18379,7 @@
 			(uuid "88ccaf6f-5c9e-4b01-a4f8-0052d67d44ef")
 		)
 		(embedded_fonts no)
-		(model "${KICAD_USER_DIR}/3D_Models/USB-ports/HRO_TYPE-C-31-M-12.step"
+		(model "C:/Users/nicol/Dropbox/My Mac (Nicolass-MacBook-Pro.local)/Documents/KiCAD/Libraries/User-main/3D_Models/USB-ports/HRO_TYPE-C-31-M-12.step"
 			(offset
 				(xyz -4.47 -7.35 0)
 			)

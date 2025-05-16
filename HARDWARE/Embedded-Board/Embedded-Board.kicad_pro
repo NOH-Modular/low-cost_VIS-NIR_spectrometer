@@ -641,7 +641,7 @@
       "plot": "SMT-v1_0/gerber-Spectrometer_v1_0/",
       "pos_files": "SMT-v1_0/",
       "specctra_dsn": "",
-      "step": "",
+      "step": "Embedded-Board.step",
       "svg": "",
       "vrml": ""
     },
