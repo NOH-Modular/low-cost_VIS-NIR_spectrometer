@@ -31,19 +31,30 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(PIN_IN2), checkPosition, CHANGE);
   
   //spectrometer initialisation
-  pinMode(0, OUTPUT);
-  pinMode(1, OUTPUT);
+  pinMode(0, OUTPUT); //SDA
+  pinMode(1, OUTPUT); //SCL
+  pinMode(16, OUTPUT); //EXTERNAL LED ENABLE
   Wire.setSCL(1);
   Wire.setSDA(0);
   delay(750); //750ms gives E-Paper enough time to initialise
-  if (sensor.begin() == false){ //no sensor detected
-    bigText("No Sensor Connected");
-  }
-  else{
-    bigText("Valid Sensor Connected");
+  if (sensor.begin() == true){ //first check for AS7265x
+    sensecon = 1;
+    bigText("AS7265x Connected");
     sensor.disableIndicator();
   }
-  delay(750);
+  else if (as7341.begin() == true){ //if no AS7265x then check for AS7341
+    sensecon = 2;
+    bigText("AS7341 Connected");
+    as7341.setATIME(100);
+    as7341.setASTEP(999);
+    as7341.setGain(AS7341_GAIN_256X);
+    as7341.setLEDCurrent(20); //mA
+  }
+  else{
+    sensecon = 0;
+    bigText("No Sensor Detected");
+  }
+  delay(1000);
   drawEmpty("Booted");
 }
 

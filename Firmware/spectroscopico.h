@@ -36,25 +36,27 @@ extern AS7265X sensor;
 /*
 Global Objects and Variables, defined in .cpp
 */
-extern int8_t pos; // Declaration
-extern int8_t newpos; // Declaration
-extern float readings[18]; // Declaration
-extern uint8_t intreadings[18]; // Declaration
-extern uint8_t intreadingsmem[9][18]; // Declaration
-extern uint8_t ledmode; // Declaration
-extern uint8_t sensemode; // Declaration
-extern volatile bool ledState; // Declaration
-extern volatile bool measuring; // Declaration
-extern volatile unsigned long lastInterruptTime; // Declaration
-extern const unsigned long debounceDelay; // Declaration
+extern int8_t pos;
+extern int8_t newpos;
+extern float readings18[18];
+extern uint16_t readings10[10]; //F1,2,3,4,5,CLR,NIR,F6,F7,F8
+extern uint8_t intreadings[18];
+extern uint8_t intreadingsmem[9][18];
+extern uint8_t sensecon; //sensor connected (0 = none, 1 = AS7265x, 2 = AS7341)
+extern uint8_t ledmode; //led mode (0 = none, 1 = internal, 2 = external, 3 = both)
+extern uint8_t sensemode; //sense mode (0 = single fire, 1 = continuous, 2 = burst of 2, 3 = burst of 3, etc.)
+extern volatile bool ledState; //holds state of builtin LED (debug use)
+extern volatile bool measuring; //true when a measurement should be taken
+extern volatile unsigned long lastInterruptTime; //previous button interrupt time
+extern const unsigned long debounceDelay; //button interrupt delay
 
 /*
 Lookup Tables
 */
 
 // Wavelength Channel names
-extern const char* wavelengthNames18[];
-extern const char* wavelengthNames10[];
+extern const char* wavelengthNames18[]; //holds wavelength names and values for AS7265x
+extern const char* wavelengthNames11[]; //holds wavelength names and values for AS7341
 
 /*
 Spectral Sensor Functions
