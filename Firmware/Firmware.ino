@@ -19,7 +19,6 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(15), handleBTNINT, FALLING);
 
   //display initialisation
-  // pinMode(13, INPUT_PULLDOWN); //pull down busy pin
   display.epd2.selectSPI(SPIn, SPISettings(4000000, MSBFIRST, SPI_MODE0));
   display.init(115200, true, 10, false, SPIn, SPISettings(4000000, MSBFIRST, SPI_MODE0));
   //full refresh to begin
@@ -54,11 +53,12 @@ void setup() {
     sensecon = 0;
     bigText(false, "No Sensor Detected");
   }
+  delay(1000);
+  drawEmpty(false, "Booted");
 }
 
 
 void loop() {
-  // Your encoder check is interrupt-driven, so no need to call checkPosition() here normally.
 
   if (buttonpress) {
     Serial.print("LOOP: buttonpress TRUE. Current 'measuring': "); Serial.println(measuring); // DEBUG

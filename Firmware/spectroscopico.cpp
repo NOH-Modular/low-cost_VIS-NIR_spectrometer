@@ -132,6 +132,7 @@ void measure(){
       intreadings[i] = random(68);
       readings18[i] = intreadings[i];
     }
+    delay(750); //simulates integration time
   }
 }
 
@@ -172,8 +173,6 @@ void multimeasure(){
   if(sensemode == 0){ // Single fire
     if (!measuring) return; // Should have been set true by main loop to start
     measure();
-    // Screen update will be handled by main loop after multimeasure returns for single
-    // Or, if you want the "Measuring..." screen up during the single measure:
     if(sensecon == 2){
       drawMain(false, detectColour10(), intreadings);
     }
@@ -192,8 +191,7 @@ void multimeasure(){
         drawMain(false, detectColour18(), intreadings);
       }
       rp2040.idleOtherCore(); // Allow other core to run (e.g. for USB serial)
-      delay(50); // Small delay to prevent hammering sensor/display too fast if needed,
-                 // and allow button flag to be processed. The drawMain is main delay.
+      delay(50); // Small delay to prevent hammering sensor/display
     }
   }
   else if(sensemode > 1){ // Burst fire (sensemode indicates number of measurements)
@@ -224,9 +222,6 @@ void multimeasure(){
             channelSums[ch] += readings10[ch];
         }
       }
-      // Optionally update screen after each burst measurement if desired
-      // drawMain( (sensecon == 2 ? detectColour10() : detectColour18()), intreadings);
-      // delay(100); // Small delay if screen updated each time
 
        rp2040.idleOtherCore();
        delay(50); // Allow button check
@@ -273,18 +268,18 @@ String detectColour18() {
   for (int i = 1; i < 18; i++) {
     if (readings18[i] > maxVal) {
       maxVal = readings18[i];
-      maxIndex = i;
+      maxIndex = i+1; //number of the column that appears on screen
     }
   }
   
   // Determine dominant colour based on peak wavelength
-  if (maxVal == 0) return "No Light";
+  if (maxVal <= 1) return "No Light";
   else if (maxIndex <= 1) return "Violet";
-  else if (maxIndex <= 2) return "Blue";
-  else if (maxIndex <= 4) return "Green";
-  else if (maxIndex <= 6) return "Yellow";
-  else if (maxIndex <= 8) return "Orange";
-  else if (maxIndex <= 13) return "Red";
+  else if (maxIndex <= 3) return "Blue";
+  else if (maxIndex <= 5) return "Green";
+  else if (maxIndex <= 7) return "Yellow";
+  else if (maxIndex <= 9) return "Orange";
+  else if (maxIndex <= 14) return "Red";
   else return "NIR";
 }
 String detectColour10() {
