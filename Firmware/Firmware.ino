@@ -39,12 +39,12 @@ void setup() {
   delay(750); //750ms gives E-Paper enough time to initialise
   if (sensor.begin() == true){ //first check for AS7265x
     sensecon = 1;
-    bigText("AS7265x Connected");
+    bigText(false, "AS7265x Connected");
     sensor.disableIndicator();
   }
   else if (as7341.begin() == true){ //if no AS7265x then check for AS7341
     sensecon = 2;
-    bigText("AS7341 Connected");
+    bigText(false, "AS7341 Connected");
     as7341.setATIME(100);
     as7341.setASTEP(999);
     as7341.setGain(AS7341_GAIN_256X);
@@ -52,12 +52,44 @@ void setup() {
   }
   else{
     sensecon = 0;
-    bigText("No Sensor Detected");
+    bigText(false, "No Sensor Detected");
   }
-  delay(1000);
-  drawEmpty("Booted");
 }
 
-void loop() {
 
+void loop() {
+  // Your encoder check is interrupt-driven, so no need to call checkPosition() here normally.
+
+  if (buttonpress) {
+    Serial.print("LOOP: buttonpress TRUE. Current 'measuring': "); Serial.println(measuring); // DEBUG
+    buttonpress = false; // Consume the flag *immediately*
+
+    if (measuring) {
+      // If currently measuring, this press means STOP.
+      measuring = false; // Signal the currently running multimeasure to stop.
+      Serial.println("LOOP: Set 'measuring' to FALSE (requesting stop).");
+      // multimeasure's internal 'while(measuring)' should catch this.
+      // No need to call multimeasure() again here.
+      // The screen update to "Stopped" or "Ready" will happen after multimeasure returns.
+    } else {
+      // Not measuring, so this press means START.
+      measuring = true;
+      Serial.print("LOOP: Set 'measuring' to TRUE (requesting start). Mode: "); Serial.println(sensemode);
+
+      multimeasure(); // Call the function. It will perform its action(s).
+                      // For continuous/burst, it loops internally until 'measuring' is false.
+
+      // After multimeasure() returns (it completed, or was stopped by 'measuring' becoming false):
+      Serial.println("LOOP: multimeasure() has returned.");
+      measuring = false; // Ensure state is consistently 'not measuring' after any operation.
+
+      // Update display to reflect the end of operation.
+      // If multimeasure showed results for single/burst, that's fine.
+      // If continuous was stopped, or any mode finished, show "Ready".
+      drawEmpty(false, "Ready");
+    }
+  }
+
+  rp2040.idleOtherCore();
+  delay(20); // A small delay is good practice.
 }

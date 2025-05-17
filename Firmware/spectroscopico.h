@@ -47,6 +47,7 @@ extern uint8_t ledmode; //led mode (0 = none, 1 = internal, 2 = external, 3 = bo
 extern uint8_t sensemode; //sense mode (0 = single fire, 1 = continuous, 2 = burst of 2, 3 = burst of 3, etc.)
 extern volatile bool ledState; //holds state of builtin LED (debug use)
 extern volatile bool measuring; //true when a measurement should be taken
+extern volatile bool buttonpress;
 extern volatile unsigned long lastInterruptTime; //previous button interrupt time
 extern const unsigned long debounceDelay; //button interrupt delay
 
@@ -56,7 +57,7 @@ Lookup Tables
 
 // Wavelength Channel names
 extern const char* wavelengthNames18[]; //holds wavelength names and values for AS7265x
-extern const char* wavelengthNames11[]; //holds wavelength names and values for AS7341
+extern const char* wavelengthNames10[]; //holds wavelength names and values for AS7341
 
 /*
 Spectral Sensor Functions
@@ -74,9 +75,9 @@ String detectColour10();
 /*
 Drawing Functions
 */
-void bigText(String text);
-void drawEmpty(String toptext);
-void drawMain(String toptext, uint8_t *finalreadings);
+void bigText(bool full, String text);
+void drawEmpty(bool full, String toptext);
+void drawMain(bool full, String toptext, uint8_t *finalreadings);
 
 /*
 Input Handlers

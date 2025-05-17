@@ -14,6 +14,7 @@ uint8_t ledmode = 1;
 uint8_t sensemode = 0;
 volatile bool ledState = LOW;
 volatile bool measuring = false;
+volatile bool buttonpress = false;
 volatile unsigned long lastInterruptTime = 0;
 const unsigned long debounceDelay = 200; //ms
 
@@ -135,33 +136,132 @@ void measure(){
 }
 
 //should first draw "waiting for reading", then take a reading if sensor connected or generate fake results, then finally draw the data on the screen
+// void multimeasure(){
+//   //waiting for reading screen
+//   bigText("Measuring");
+
+//   if(sensemode == 0){ //single fire
+//     measure();
+//     measuring = false;
+//     drawMain(detectColour18(), intreadings);
+//   }
+//   else if(sensemode == 1){ //continuous fire
+//     while(measuring){ //continues until button pressed again
+//       measure();
+//       drawMain(detectColour18(), intreadings);
+//       delay(500);
+//     }
+//   }
+//   else if(sensemode > 1){ //burst fire
+//     for(uint8_t i = 0; i < sensemode; i++){ //take number of measurements equal to sensemode from 2-9
+//       measure();
+//       //record in mem
+//     }
+//     //average
+//     //show results
+//     drawMain(detectColour18(), intreadings);
+//     measuring = false;
+//   }
+
+// }
+
+// spectroscopico.cpp
 void multimeasure(){
-  //waiting for reading screen
-  bigText("Measuring");
+  bigText(false, "Measuring..."); // Show "Measuring..." screen once at the start
 
-  if(sensemode == 0){ //single fire
+  if(sensemode == 0){ // Single fire
+    if (!measuring) return; // Should have been set true by main loop to start
     measure();
-    measuring = false;
-    drawMain(detectColour18(), intreadings);
+    // Screen update will be handled by main loop after multimeasure returns for single
+    // Or, if you want the "Measuring..." screen up during the single measure:
+    if(sensecon == 2){
+      drawMain(false, detectColour10(), intreadings);
+    }
+    else{
+      drawMain(false, detectColour18(), intreadings);
+    }
+    measuring = false; // Signal that this single measurement is done
   }
-  else if(sensemode == 1){ //continuous fire
-    while(measuring){ //continues until button pressed again
+  else if(sensemode == 1){ // Continuous fire
+    while(measuring){ // Continues until 'measuring' is set to false by the main loop
       measure();
-      drawMain(detectColour18(), intreadings);
-      delay(500);
+      if(sensecon == 2){
+        drawMain(false, detectColour10(), intreadings);
+      }
+      else{
+        drawMain(false, detectColour18(), intreadings);
+      }
+      rp2040.idleOtherCore(); // Allow other core to run (e.g. for USB serial)
+      delay(50); // Small delay to prevent hammering sensor/display too fast if needed,
+                 // and allow button flag to be processed. The drawMain is main delay.
     }
   }
-  else if(sensemode > 1){ //burst fire
-    for(uint8_t i = 0; i < sensemode; i++){ //take number of measurements equal to sensemode from 2-9
-      measure();
-      //record in mem
-    }
-    //average
-    //show results
-    drawMain(detectColour18(), intreadings);
-    measuring = false;
-  }
+  else if(sensemode > 1){ // Burst fire (sensemode indicates number of measurements)
+    if (!measuring) return;
 
+    float tempReadings[18]; // Or 10, depending on sensor
+    uint8_t numChannels = (sensecon == 2) ? 10 : 18;
+
+    // Initialize intreadingsmem for averaging if needed, or average directly
+    for (uint8_t ch = 0; ch < numChannels; ++ch) {
+        if (numChannels == 18) intreadingsmem[0][ch] = 0; // Use a specific row or a temp sum array
+        else { /* similar for 10 channels if you have a different averaging buffer */ }
+    }
+    // Or better, create a temporary sum array for the current burst:
+    float channelSums[numChannels];
+    for(uint8_t ch=0; ch<numChannels; ++ch) channelSums[ch] = 0.0;
+
+
+    for(uint8_t i = 0; i < sensemode && measuring; i++){
+      bigText(false, "Measure " + String(i+1) + "/" + String(sensemode));
+      measure(); // Populates readings18/readings10 and intreadings
+
+      // Accumulate readings for averaging
+      for (uint8_t ch = 0; ch < numChannels; ++ch) {
+        if (numChannels == 18) {
+            channelSums[ch] += readings18[ch];
+        } else {
+            channelSums[ch] += readings10[ch];
+        }
+      }
+      // Optionally update screen after each burst measurement if desired
+      // drawMain( (sensecon == 2 ? detectColour10() : detectColour18()), intreadings);
+      // delay(100); // Small delay if screen updated each time
+
+       rp2040.idleOtherCore();
+       delay(50); // Allow button check
+    }
+
+    if (measuring) { // Only process and display if not stopped mid-burst
+        // Calculate averages
+        for (uint8_t ch = 0; ch < numChannels; ++ch) {
+            if (numChannels == 18) {
+                readings18[ch] = channelSums[ch] / sensemode;
+            } else {
+                readings10[ch] = (uint16_t)(channelSums[ch] / sensemode);
+            }
+        }
+        // Normalize the averaged readings18/readings10 into intreadings for display
+        float maxReading = 0;
+        if (numChannels == 18) {
+            for (int i = 0; i < 18; i++) {
+                if (readings18[i] > maxReading) maxReading = readings18[i];
+            }
+            for (int i = 0; i < 18; i++) {
+                intreadings[i] = (maxReading == 0) ? 0 : readings18[i] / maxReading * 69;
+            }
+        } else { // AS7341 10 channels
+            for (int i = 0; i < 10; i++) {
+                if (readings10[i] > maxReading) maxReading = readings10[i];
+            }
+            for (int i = 0; i < 10; i++) {
+                intreadings[i] = (maxReading == 0) ? 0 : readings10[i] / maxReading * 69;
+            }
+        }
+        drawMain(false, (sensecon == 2 ? detectColour10() : detectColour18()), intreadings);
+    }
+    measuring = false; // Signal that burst is done or was stopped
+  }
 }
 
 //determine the dominant colour (based on Sparkfun example)
@@ -192,18 +292,18 @@ String detectColour10() {
   float maxVal;
   
   // Find the peak wavelength
-  for (int i = 1; i < 9; i++) { //skips 10th channel as this is "clear"
+  for (int i = 0; i < 9; i++) { //skips 10th channel as this is "clear"
     if (readings10[i] > maxVal) {
       maxVal = readings10[i];
-      maxIndex = i;
+      maxIndex = i+1;
     }
   }
   
   // Determine dominant colour based on peak wavelength
-  if (maxVal == 0) return "No Light";
+  if (maxVal <= 1) return "No Light";
   else if (maxIndex <= 1) return "Violet";
-  else if (maxIndex <= 2) return "Blue";
-  else if (maxIndex <= 4) return "Green";
+  else if (maxIndex <= 3) return "Blue";
+  else if (maxIndex <= 5) return "Green";
   else if (maxIndex <= 6) return "Yellow";
   else if (maxIndex <= 7) return "Orange";
   else if (maxIndex <= 8) return "Red";
@@ -213,9 +313,14 @@ String detectColour10() {
 /*
 Drawing Functions
 */
-void bigText(String text) {
+void bigText(bool full, String text) {
   display.setRotation(1); //sets landscape rotation
-  display.setFullWindow(); //sets full refresh mode
+  if(full){
+    display.setFullWindow(); //sets full refresh mode
+  }
+  else{
+    display.setPartialWindow(0, 0, display.width(), display.height()); //sets partial refresh mode 
+  }
   display.firstPage();     //start paged drawing
 
   //Variables to store text bounds
@@ -235,9 +340,14 @@ void bigText(String text) {
   } while (display.nextPage()); // Send page buffer & check if more pages
 }
 
-void drawEmpty(String toptext) {
+void drawEmpty(bool full, String toptext) {
   display.setRotation(1); //sets landscape rotation
-  display.setFullWindow(); //sets full refresh mode
+  if(full){
+    display.setFullWindow(); //sets full refresh mode
+  }
+  else{
+    display.setPartialWindow(0, 0, display.width(), display.height()); //sets partial refresh mode 
+  }
   display.firstPage();     //start paged drawing
 
   do {
@@ -298,9 +408,14 @@ void drawEmpty(String toptext) {
   } while (display.nextPage()); // Send page buffer & check if more pages
 }
 
-void drawMain(String toptext, uint8_t *finalreadings) {
+void drawMain(bool full, String toptext, uint8_t *finalreadings) {
   display.setRotation(1); //sets landscape rotation
-  display.setFullWindow(); //sets full refresh mode
+  if(full){
+    display.setFullWindow(); //sets full refresh mode
+  }
+  else{
+    display.setPartialWindow(0, 0, display.width(), display.height()); //sets partial refresh mode 
+  }
   display.firstPage();     //start paged drawing
 
   do {
@@ -392,32 +507,24 @@ void checkPosition() //called upon whenever pin changes on encoder
   encoder->tick(); //call tick() to check the state.
   newpos = encoder->getPosition();
   if (pos != newpos) {
-    //bigText("ROTATE");
       if ((int)(encoder->getDirection()) > 0 && sensemode < 10){
         sensemode++;
       }
       else if((int)(encoder->getDirection()) < 0 && sensemode > 0){
         sensemode--;
       }
+      drawMain(false, "Ready", intreadings);
   }
 }
 
 void handleBTNINT() {
   unsigned long interruptTime = millis();
   if (interruptTime - lastInterruptTime > debounceDelay) {
-    //toggle LED for debug purposes
+    // Toggle LED for debug purposes
     ledState = !ledState;
     digitalWrite(LED_BUILTIN, ledState);
-    
-    //take measurement or cancel continuous measurement
-    if(measuring == false){
-      measuring = true;
-      multimeasure();
-    }
-    else{
-      measuring = false;
-    }
 
+    buttonpress = true; // Set the flag for the main loop
     lastInterruptTime = interruptTime;
   }
 }
