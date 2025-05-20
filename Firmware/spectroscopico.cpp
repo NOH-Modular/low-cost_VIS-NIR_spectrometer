@@ -174,10 +174,11 @@ void multimeasure(){
     if (!measuring) return; // Should have been set true by main loop to start
     measure();
     if(sensecon == 2){
-      drawMain(false, detectColour10(), intreadings);
+      // drawMain(false, detectColour10(), intreadings);
+      drawMainRipe(false, detectColour10(), intreadings);
     }
     else{
-      drawMain(false, detectColour18(), intreadings);
+      drawMainRipe(false, detectColour18(), intreadings);
     }
     measuring = false; // Signal that this single measurement is done
   }
@@ -303,6 +304,11 @@ String detectColour10() {
   else if (maxIndex <= 7) return "Orange";
   else if (maxIndex <= 8) return "Red";
   else return "NIR";
+}
+
+uint8_t bananaRipeness(){ //compare prominence of ~675nm. High values are more likely to be ripe
+  intreadings;
+  return 0;
 }
 
 /*
@@ -490,6 +496,97 @@ void drawMain(bool full, String toptext, uint8_t *finalreadings) {
     display.setTextColor(GxEPD_BLACK);
     display.setCursor(0, 27);
     display.print(toptext);
+
+  } while (display.nextPage()); // Send page buffer & check if more pages
+}
+
+void drawMainRipe(bool full, uint8_t ripeness, uint8_t *finalreadings) {
+  display.setRotation(1); //sets landscape rotation
+  if(full){
+    display.setFullWindow(); //sets full refresh mode
+  }
+  else{
+    display.setPartialWindow(0, 0, display.width(), display.height()); //sets partial refresh mode 
+  }
+  display.firstPage();     //start paged drawing
+
+  do {
+    //Set background for the current page
+    display.fillScreen(GxEPD_WHITE);
+    if(sensecon <= 1){ //for bogus data or AS7265x (18 channels)
+      display.drawBitmap(2, 37, base18, 245, 91, GxEPD_BLACK);
+      //Draw Filled bars (Rectangles)
+      display.fillRect(3, 107, 9, -finalreadings[0], GxEPD_BLACK);
+      display.fillRect(16, 107, 9, -finalreadings[1], GxEPD_BLACK);
+      display.fillRect(30, 107, 9, -finalreadings[2], GxEPD_BLACK);
+      display.fillRect(44, 107, 9, -finalreadings[3], GxEPD_BLACK);
+      display.fillRect(58, 107, 9, -finalreadings[4], GxEPD_BLACK);
+      display.fillRect(72, 107, 9, -finalreadings[5], GxEPD_BLACK);
+      display.fillRect(85, 107, 9, -finalreadings[6], GxEPD_BLACK);
+      display.fillRect(99, 107, 9, -finalreadings[7], GxEPD_BLACK);
+      display.fillRect(113, 107, 9, -finalreadings[8], GxEPD_BLACK);
+      display.fillRect(127, 107, 9, -finalreadings[9], GxEPD_BLACK);
+      display.fillRect(140, 107, 9, -finalreadings[10], GxEPD_BLACK);
+      display.fillRect(154, 107, 9, -finalreadings[11], GxEPD_BLACK);
+      display.fillRect(168, 107, 9, -finalreadings[12], GxEPD_BLACK);
+      display.fillRect(182, 107, 9, -finalreadings[13], GxEPD_BLACK);
+      display.fillRect(195, 107, 9, -finalreadings[14], GxEPD_BLACK);
+      display.fillRect(209, 107, 9, -finalreadings[15], GxEPD_BLACK);
+      display.fillRect(223, 107, 9, -finalreadings[16], GxEPD_BLACK);
+      display.fillRect(237, 107, 9, -finalreadings[17], GxEPD_BLACK);
+    }
+    else{ //for AS7341 (10 channels)
+      display.drawBitmap(2, 37, base10, 246, 90, GxEPD_BLACK);
+      
+      for(uint8_t i = 0; i < 10; i++){
+        display.fillRect((3+(i*25)), 107, 19, -finalreadings[i], GxEPD_BLACK);
+      }
+    }
+
+    //Draw measurement mode
+    display.setFont(); //default 5x7 font
+    display.setTextColor(GxEPD_BLACK);
+    if(sensemode == 0){
+      display.setCursor(181, 10);
+      display.print("Single Fire");
+    }
+    else if(sensemode == 1){
+      display.setCursor(187, 10);
+      display.print("Continuous");
+    }
+    else{
+      display.setCursor(205, 10);
+      display.print("Burst ");
+      display.print(sensemode);
+    }
+    
+    //draw led mode
+    if(ledmode == 0){
+      display.setCursor(205, 23);
+      display.print("No LEDs");
+    }
+    else if(ledmode == 1){
+      display.setCursor(169, 23);
+      display.print("Internal LEDs");
+    }
+    else if(ledmode == 2){
+      display.setCursor(169, 23);
+      display.print("External LEDs");
+    }
+    else if(ledmode == 3){
+      display.setCursor(199, 23);
+      display.print("All LEDs");
+    }
+    else{
+      display.setCursor(175, 23);
+      display.print("Invalid Mode");
+    }
+
+    //Draw Ripeness Scale (scaled from 0-255 to 0-158)
+    display.drawBitmap(3, 8, ripescale, 170, 16, GxEPD_BLACK); //scale with labels
+    float temp = ripeness / 256 * 159;
+    ripeness = (uint8_t) temp;
+    display.drawBitmap(ripeness, 19, arrow, 7, 10, GxEPD_BLACK); //arrow
 
   } while (display.nextPage()); // Send page buffer & check if more pages
 }

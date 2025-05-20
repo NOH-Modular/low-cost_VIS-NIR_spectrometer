@@ -46,7 +46,7 @@ void setup() {
     bigText(false, "AS7341 Connected");
     as7341.setATIME(100);
     as7341.setASTEP(999);
-    as7341.setGain(AS7341_GAIN_256X);
+    as7341.setGain(AS7341_GAIN_32X);
     as7341.setLEDCurrent(20); //mA
   }
   else{
@@ -68,25 +68,17 @@ void loop() {
       // If currently measuring, this press means STOP.
       measuring = false; // Signal the currently running multimeasure to stop.
       Serial.println("LOOP: Set 'measuring' to FALSE (requesting stop).");
-      // multimeasure's internal 'while(measuring)' should catch this.
-      // No need to call multimeasure() again here.
-      // The screen update to "Stopped" or "Ready" will happen after multimeasure returns.
-    } else {
+    } 
+    else {
       // Not measuring, so this press means START.
       measuring = true;
       Serial.print("LOOP: Set 'measuring' to TRUE (requesting start). Mode: "); Serial.println(sensemode);
 
       multimeasure(); // Call the function. It will perform its action(s).
-                      // For continuous/burst, it loops internally until 'measuring' is false.
 
       // After multimeasure() returns (it completed, or was stopped by 'measuring' becoming false):
       Serial.println("LOOP: multimeasure() has returned.");
       measuring = false; // Ensure state is consistently 'not measuring' after any operation.
-
-      // Update display to reflect the end of operation.
-      // If multimeasure showed results for single/burst, that's fine.
-      // If continuous was stopped, or any mode finished, show "Ready".
-      drawEmpty(false, "Ready");
     }
   }
 

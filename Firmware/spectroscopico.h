@@ -22,8 +22,9 @@ Includes
 #include "Fonts/FreeMonoBold9pt7b.h" //Medium font
 #include "Fonts/FreeMonoBold18pt7b.h" //Large font
 
-#include "18chanbase.h" //Custom bitmap for base UI (AS7265x)
-#include "10chanbase.h" //Custom bitmap for base UI (AS7341)
+#include "18chanbase.h" //Bitmap for base UI (AS7265x)
+#include "10chanbase.h" //Bitmap for base UI (AS7341)
+#include "ripescale.h" //Bitmaps for ripeness scale and arrow
 
 /*
 Global Objects and Variables, defined in .ino
@@ -72,12 +73,16 @@ void multimeasure();
 String detectColour18();
 String detectColour10();
 
+//determine ripeness of a banana
+uint8_t bananaRipeness();
+
 /*
 Drawing Functions
 */
 void bigText(bool full, String text);
 void drawEmpty(bool full, String toptext);
 void drawMain(bool full, String toptext, uint8_t *finalreadings);
+void drawMainRipe(bool full, uint8_t ripeness, uint8_t *finalreadings);
 
 /*
 Input Handlers
