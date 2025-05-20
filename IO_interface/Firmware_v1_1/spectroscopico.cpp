@@ -39,7 +39,6 @@ Spectral Sensor Functions
 //spectral reading, ledmode 0 for no LEDs, 1 for inbuilt LEDs, (2 for external LEDs, 4 for all LEDs)
 void measure(){
   if(sensecon == 1){ //AS7265x 18 channels
-    Serial.print("in measure sensecon 1 \n");
     if(ledmode == 0){ //measure with no LEDs
       sensor.takeMeasurements();
     }
@@ -168,34 +167,19 @@ void measure(){
 // }
 
 // spectroscopico.cpp
-void multimeasure(){
-  bigText(false, "Measuring..."); // Show "Measuring..." screen once at the start
+void multimeasure()
+{
+  // Make sure it's not already reading
+  if (!measuring) return; 
 
-  if(sensemode == 0){ // Single fire
-    Serial.print("in sense mode 0 \n");
-    if (!measuring) return; // Should have been set true by main loop to start
-    measure();
-    if(sensecon == 2){
-      drawMain(false, detectColour10(), intreadings);
-    }
-    else{
-      drawMain(false, detectColour18(), intreadings);
-    }
-    measuring = false; // Signal that this single measurement is done
-  }
-  else if(sensemode == 1){ // Continuous fire
-    while(measuring){ // Continues until 'measuring' is set to false by the main loop
-      measure();
-      if(sensecon == 2){
-        drawMain(false, detectColour10(), intreadings);
-      }
-      else{
-        drawMain(false, detectColour18(), intreadings);
-      }
-      rp2040.idleOtherCore(); // Allow other core to run (e.g. for USB serial)
-      delay(50); // Small delay to prevent hammering sensor/display
-    }
-  }
+  //measure and print
+  measure();
+  if(sensecon == 2){drawMain(false, detectColour10(), intreadings);}
+  else{drawMain(false, detectColour18(), intreadings);}
+
+  // Signal that this single measurement is done
+  measuring = false;
+
 }
 
 //determine the dominant colour (based on Sparkfun example)
