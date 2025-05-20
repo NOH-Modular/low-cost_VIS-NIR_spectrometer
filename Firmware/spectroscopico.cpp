@@ -136,36 +136,6 @@ void measure(){
   }
 }
 
-//should first draw "waiting for reading", then take a reading if sensor connected or generate fake results, then finally draw the data on the screen
-// void multimeasure(){
-//   //waiting for reading screen
-//   bigText("Measuring");
-
-//   if(sensemode == 0){ //single fire
-//     measure();
-//     measuring = false;
-//     drawMain(detectColour18(), intreadings);
-//   }
-//   else if(sensemode == 1){ //continuous fire
-//     while(measuring){ //continues until button pressed again
-//       measure();
-//       drawMain(detectColour18(), intreadings);
-//       delay(500);
-//     }
-//   }
-//   else if(sensemode > 1){ //burst fire
-//     for(uint8_t i = 0; i < sensemode; i++){ //take number of measurements equal to sensemode from 2-9
-//       measure();
-//       //record in mem
-//     }
-//     //average
-//     //show results
-//     drawMain(detectColour18(), intreadings);
-//     measuring = false;
-//   }
-
-// }
-
 // spectroscopico.cpp
 void multimeasure(){
   bigText(false, "Measuring..."); // Show "Measuring..." screen once at the start
@@ -175,10 +145,11 @@ void multimeasure(){
     measure();
     if(sensecon == 2){
       // drawMain(false, detectColour10(), intreadings);
-      drawMainRipe(false, detectColour10(), intreadings);
+      drawMainRipe(false, bananaRipeness(), intreadings);
     }
     else{
-      drawMainRipe(false, detectColour18(), intreadings);
+      // drawMainRipe(false, detectColour18(), intreadings);
+      drawMainRipe(false, bananaRipeness(), intreadings);
     }
     measuring = false; // Signal that this single measurement is done
   }
@@ -186,10 +157,12 @@ void multimeasure(){
     while(measuring){ // Continues until 'measuring' is set to false by the main loop
       measure();
       if(sensecon == 2){
-        drawMain(false, detectColour10(), intreadings);
+        // drawMain(false, detectColour10(), intreadings);
+        drawMainRipe(false, bananaRipeness(), intreadings);
       }
       else{
-        drawMain(false, detectColour18(), intreadings);
+        // drawMain(false, detectColour18(), intreadings);
+        drawMainRipe(false, bananaRipeness(), intreadings);
       }
       rp2040.idleOtherCore(); // Allow other core to run (e.g. for USB serial)
       delay(50); // Small delay to prevent hammering sensor/display
@@ -306,9 +279,23 @@ String detectColour10() {
   else return "NIR";
 }
 
-uint8_t bananaRipeness(){ //compare prominence of ~675nm. High values are more likely to be ripe
-  intreadings;
-  return 0;
+uint8_t bananaRipeness(){ //compare prominence of ~650nm to ~550nm. Ratios close to 0.5 are unripe, 1 are ripe, 1.5 are overripe
+  float ripeness;
+  if(sensecon == 2){
+    ripeness = (static_cast<float>(intreadings[7]) / intreadings[4]) - 0.7; 
+    // ripeness = intreadings[6] / intreadings[4];
+  }
+  else{
+    ripeness = (static_cast<float>(intreadings[7]) / intreadings[4]) - 0.7;
+  }
+  if(ripeness<0){
+    ripeness = 0;
+  }
+  else if(ripeness>1){
+    ripeness = 1;
+  }
+  ripeness *= 158; //(scale so 0.5 ratio corresponds to 0 and 1.5 corresponds to 160 (full scale) with 1 in the middle)
+  return (uint8_t) ripeness;
 }
 
 /*
@@ -582,11 +569,9 @@ void drawMainRipe(bool full, uint8_t ripeness, uint8_t *finalreadings) {
       display.print("Invalid Mode");
     }
 
-    //Draw Ripeness Scale (scaled from 0-255 to 0-158)
+    //Draw Ripeness Scale
     display.drawBitmap(3, 8, ripescale, 170, 16, GxEPD_BLACK); //scale with labels
-    float temp = ripeness / 256 * 159;
-    ripeness = (uint8_t) temp;
-    display.drawBitmap(ripeness, 19, arrow, 7, 10, GxEPD_BLACK); //arrow
+    display.drawBitmap(ripeness, 25, arrow, 7, 10, GxEPD_BLACK); //arrow
 
   } while (display.nextPage()); // Send page buffer & check if more pages
 }
