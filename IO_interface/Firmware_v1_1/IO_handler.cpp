@@ -34,7 +34,7 @@ void readSensor(bool print)
   {
     measuring=true;
     if(print){bigText(false, "Measuring...");}
-    multimeasure();
+    multimeasure(digitalRead(ENC_BTN));
   }
 }
 

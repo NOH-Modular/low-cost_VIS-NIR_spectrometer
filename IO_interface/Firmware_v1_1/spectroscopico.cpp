@@ -171,15 +171,21 @@ void measure(){
 }
 
 // spectroscopico.cpp
-void multimeasure()
+void multimeasure(bool enc)
 {
   // Make sure it's not already reading
   if (!measuring) return; 
 
   //measure and print
   measure();
-  if(sensecon == 2){drawMain(false, detectColour10(), intreadings);}
-  else{drawMain(false, detectColour18(), intreadings);}
+  if(enc){
+    if(sensecon == 2){drawMain(false, detectColour10(), intreadings);}
+    else{drawMain(false, detectColour18(), intreadings);}
+  }
+  else{
+    if(sensecon == 2){drawMainRipe(false, bananaRipeness(), intreadings);}
+    else{drawMainRipe(false, bananaRipeness(), intreadings);}
+  }
 
   // Signal that this single measurement is done
   measuring = false;
@@ -239,7 +245,7 @@ uint8_t bananaRipeness(){ //compare prominence of ~650nm to ~550nm. Ratios close
     // ripeness = intreadings[6] / intreadings[4];
   }
   else{
-    ripeness = (static_cast<float>(intreadings[7]) / intreadings[4]) - 0.7;
+    ripeness = (static_cast<float>(intreadings[8]) / intreadings[4]) - 0.7;
   }
   if(ripeness<0){
     ripeness = 0;

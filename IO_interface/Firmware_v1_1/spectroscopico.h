@@ -68,7 +68,7 @@ extern const char* wavelengthNames10[]; //holds wavelength names and values for 
 void measure();
 
 //should first draw "waiting for reading", then take a reading if sensor connected or generate fake results, then finally draw the data on the screen
-void multimeasure();
+void multimeasure(bool enc);
 
 //determine the dominant colour (based on Sparkfun example)
 String detectColour18();
@@ -83,5 +83,6 @@ uint8_t bananaRipeness();
 void bigText(bool full, String text);
 void drawEmpty(bool full, String toptext);
 void drawMain(bool full, String toptext, uint8_t *finalreadings);
+void drawMainRipe(bool full, uint8_t ripeness, uint8_t *finalreadings);
 
 #endif 
