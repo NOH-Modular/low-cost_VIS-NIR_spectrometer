@@ -24,6 +24,7 @@ Includes
 
 #include "18chanbase.h" //Custom bitmap for base UI (AS7265x)
 #include "10chanbase.h" //Custom bitmap for base UI (AS7341)
+#include "ripescale.h" //Bitmaps for ripeness scale and arrow
 
 /*
 Global Objects and Variables, defined in .ino
@@ -72,6 +73,9 @@ void multimeasure();
 //determine the dominant colour (based on Sparkfun example)
 String detectColour18();
 String detectColour10();
+
+//determine ripeness of a banana
+uint8_t bananaRipeness();
 
 //----------------------------------------------------------------------------------------------------//
 // Screen Print Functions

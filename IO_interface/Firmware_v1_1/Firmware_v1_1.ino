@@ -53,7 +53,7 @@ void setup()
   }
   else{
     sensecon = 0;
-    bigText(false, "No Sensor Detected");
+    bigText(false, "No Sensor Detected, Generating Random Results");
   }
   delay(1000);
   drawEmpty(false, "Booted");
