@@ -48,7 +48,7 @@ void setup()
     bigText(false, "AS7341 Connected");
     as7341.setATIME(100);
     as7341.setASTEP(999);
-    as7341.setGain(AS7341_GAIN_256X);
+    as7341.setGain(AS7341_GAIN_32X);
     as7341.setLEDCurrent(20); //mA
   }
   else{
