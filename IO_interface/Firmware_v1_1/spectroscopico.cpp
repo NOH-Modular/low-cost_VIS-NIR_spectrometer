@@ -12,6 +12,7 @@ uint8_t intreadingsmem[9][18];
 uint8_t sensecon;
 uint8_t ledmode = 1;
 uint8_t sensemode = 0;
+volatile bool cont_flag_draw = false;
 volatile bool ledState = LOW;
 volatile bool measuring = false;
 volatile bool buttonpress = false;
@@ -378,7 +379,8 @@ void drawMain(bool full, String toptext, uint8_t *finalreadings) {
     }
     else if(sensemode == 1){
       display.setCursor(187, 10);
-      display.print("Continuous");
+      if(cont_flag_draw){display.print("Cont. On");}
+      else{display.print("Cont. Off");}
     }
     else{
       display.setCursor(205, 10);

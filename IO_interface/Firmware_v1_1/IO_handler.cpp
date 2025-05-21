@@ -17,8 +17,6 @@ void beginIO()
   button_buffer.disableTimer();
   encoder_buffer.attachInterrupt(ENC_BUFFER_TIME, encoderBuffer);
   encoder_buffer.disableTimer();
-  continuous_timer.attachInterruptInterval(4000000, continuousTimer);
-  continuous_timer.disableTimer();
 
   //Interrupt Definition
   attachInterrupt(digitalPinToInterrupt(BTN_PIN), buttonInterrupt, CHANGE);
@@ -40,6 +38,11 @@ void readSensor(bool print)
   }
 }
 
+bool checkFlag()
+{
+  return cont_flag;
+}
+
 //----------------------------------------------------------------------------------------------------//
 // Button Interrupt & Timer Handlers
 //----------------------------------------------------------------------------------------------------//
@@ -54,15 +57,20 @@ void buttonInterrupt()
 
 bool buttonBuffer(struct repeating_timer *t)
 {
-  //read one time, then if in continuous mode either stop or start the measuring timer
+  //read one time, then toggle the continuous flag if in continuous mode
   if(!digitalRead(BTN_PIN))
   {
-    readSensor(true);
     if(sensemode)
     {
-      Serial.print("in continuous mode\n");
-      CONTINUOUS_FLAG=true;Serial.print("starting timer\n");
+      cont_flag = !cont_flag;
+      cont_flag_draw = cont_flag;
+      if(!cont_flag){
+        if(sensecon == 2){drawMain(false, detectColour10(), intreadings);}
+        else{drawMain(false, detectColour18(), intreadings);}
+        return true;
+      }
     }
+    readSensor(true);
   }
   
   //re-enable int & disable buffer
@@ -94,7 +102,7 @@ bool encoderBuffer(struct repeating_timer *t)
   else
   {
     sensemode = !sensemode;
-    if(!sensemode){CONTINUOUS_FLAG=false;}
+    if(!sensemode){cont_flag=false;cont_flag_draw = cont_flag;}
   }
   
   if(sensecon == 2){
@@ -107,20 +115,5 @@ bool encoderBuffer(struct repeating_timer *t)
   //re-enable int & disable buffer
   attachInterrupt(digitalPinToInterrupt(ENC_PIN_A), encoderInterrupt, CHANGE);
   encoder_buffer.disableTimer();
-  return true;
-}
-
-//----------------------------------------------------------------------------------------------------//
-// Continuous Readings Timer
-//----------------------------------------------------------------------------------------------------//
-bool continuousTimer(struct repeating_timer *t)
-{
-  //read without printing "measure"
-  Serial.print("Here!\n");
-  readSensor(false);
-
-  //check if continuous was stopped
-  Serial.print(CONTINUOUS_FLAG);
-  if(!CONTINUOUS_FLAG){continuous_timer.disableTimer();}
   return true;
 }

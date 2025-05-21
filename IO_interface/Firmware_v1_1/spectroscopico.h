@@ -42,6 +42,7 @@ extern float readings18[18];
 extern uint16_t readings10[10]; //F1,2,3,4,5,CLR,NIR,F6,F7,F8
 extern uint8_t intreadings[18];
 extern uint8_t intreadingsmem[9][18];
+extern volatile bool cont_flag_draw;
 extern uint8_t sensecon; //sensor connected (0 = none, 1 = AS7265x, 2 = AS7341)
 extern uint8_t ledmode; //led mode (0 = none, 1 = internal, 2 = external, 3 = both)
 extern uint8_t sensemode; //sense mode (0 = single fire, 1 = continuous, 2 = burst of 2, 3 = burst of 3, etc.)

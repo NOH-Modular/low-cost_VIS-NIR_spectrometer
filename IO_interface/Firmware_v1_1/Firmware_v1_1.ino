@@ -1,12 +1,15 @@
 #include <Adafruit_GFX.h>
 #include "spectroscopico.h"
 #include "IO_handler.h"
+#include "RPi_Pico_ISR_Timer.h"
 
 //----------------------------------------------------------------------------------------------------//
 // Objects & Constants Definition
 //----------------------------------------------------------------------------------------------------//
 #define PIN_IN1 5
 #define PIN_IN2 3
+
+
 
 Adafruit_AS7341 as7341;
 AS7265X sensor;
@@ -60,5 +63,6 @@ void setup()
 // Loop Function (SHOULD HAVE NOTHING)
 //----------------------------------------------------------------------------------------------------//
 void loop() {
-
+  //delay(4000);
+  if(checkFlag()){readSensor(false);}
 }
