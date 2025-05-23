@@ -1,12 +1,15 @@
 #include <Adafruit_GFX.h>
 #include "spectroscopico.h"
 #include "IO_handler.h"
+#include "RPi_Pico_ISR_Timer.h"
 
 //----------------------------------------------------------------------------------------------------//
 // Objects & Constants Definition
 //----------------------------------------------------------------------------------------------------//
 #define PIN_IN1 5
 #define PIN_IN2 3
+
+
 
 Adafruit_AS7341 as7341;
 AS7265X sensor;
@@ -45,12 +48,12 @@ void setup()
     bigText(false, "AS7341 Connected");
     as7341.setATIME(100);
     as7341.setASTEP(999);
-    as7341.setGain(AS7341_GAIN_256X);
+    as7341.setGain(AS7341_GAIN_32X);
     as7341.setLEDCurrent(20); //mA
   }
   else{
     sensecon = 0;
-    bigText(false, "No Sensor Detected");
+    bigText(false, "No Sensor Detected, Generating Random Results");
   }
   delay(1000);
   drawEmpty(false, "Booted");
@@ -60,5 +63,6 @@ void setup()
 // Loop Function (SHOULD HAVE NOTHING)
 //----------------------------------------------------------------------------------------------------//
 void loop() {
-
+  //delay(4000);
+  if(checkFlag()){readSensor(false);}
 }

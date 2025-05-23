@@ -24,6 +24,7 @@ Includes
 
 #include "18chanbase.h" //Custom bitmap for base UI (AS7265x)
 #include "10chanbase.h" //Custom bitmap for base UI (AS7341)
+#include "ripescale.h" //Bitmaps for ripeness scale and arrow
 
 /*
 Global Objects and Variables, defined in .ino
@@ -42,6 +43,7 @@ extern float readings18[18];
 extern uint16_t readings10[10]; //F1,2,3,4,5,CLR,NIR,F6,F7,F8
 extern uint8_t intreadings[18];
 extern uint8_t intreadingsmem[9][18];
+extern volatile bool cont_flag_draw;
 extern uint8_t sensecon; //sensor connected (0 = none, 1 = AS7265x, 2 = AS7341)
 extern uint8_t ledmode; //led mode (0 = none, 1 = internal, 2 = external, 3 = both)
 extern uint8_t sensemode; //sense mode (0 = single fire, 1 = continuous, 2 = burst of 2, 3 = burst of 3, etc.)
@@ -66,11 +68,14 @@ extern const char* wavelengthNames10[]; //holds wavelength names and values for 
 void measure();
 
 //should first draw "waiting for reading", then take a reading if sensor connected or generate fake results, then finally draw the data on the screen
-void multimeasure();
+void multimeasure(bool enc);
 
 //determine the dominant colour (based on Sparkfun example)
 String detectColour18();
 String detectColour10();
+
+//determine ripeness of a banana
+uint8_t bananaRipeness();
 
 //----------------------------------------------------------------------------------------------------//
 // Screen Print Functions
@@ -78,5 +83,6 @@ String detectColour10();
 void bigText(bool full, String text);
 void drawEmpty(bool full, String toptext);
 void drawMain(bool full, String toptext, uint8_t *finalreadings);
+void drawMainRipe(bool full, uint8_t ripeness, uint8_t *finalreadings);
 
 #endif 
